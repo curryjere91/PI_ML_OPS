@@ -14,7 +14,7 @@ df = pd.read_csv('clean_dataset.csv')
 
 @app.get('/')
 def index():   
-    return {'message': 'Wisdom is the offsping of suffering and Time.'}
+    return {'Message from Jere to whoever reads it': 'Wisdom is the offsping of suffering and Time.'}
 
 
 @app.get('/peliculas_mes/{mes}')
@@ -45,6 +45,10 @@ def peliculas_mes(mes: str):
 
     #get month name and force it to lower case
     df['mes'] = df['release_date'].dt.month_name().str.lower()
+
+    #return error if not using a month in spanish
+    if mes.lower() not in meses_espanol:
+        return {'error': 'Invalid month, enter a valid month in spanish'}
     
     #getting the spanish month, forced to lower case as well
     #filter month to the english month.
@@ -82,6 +86,10 @@ def peliculas_dia(dia: str):
     #getting the day of the week from the date
     df['day_of_week'] = df['release_date'].dt.day_name()
 
+    #return error if input is not a day in spanish
+    if unidecode(dia.lower()) not in dias_espanol:
+        return {'error': 'Invalid day, enter a valid spanish day. Accents can be ignored'}
+
     # getting the Spanish day, forced to lower case and using unidecode to ignore accents
     df_dia = df[df['day_of_week'] == dias_espanol[unidecode(dia.lower())]]
     nombre_dia = dia.capitalize()
@@ -99,6 +107,9 @@ def franquicia(franquicia:str):
 
     #filtering movies that belong to a collection the case and na exceptions are made to ignore the case from the input and avoid raising errors if there are empty values
     movie_collection = df[df['belongs_to_collection'].str.contains(franquicia, case=False, na=False)]
+
+    if movie_collection.empty:
+        return {'error': 'Movie collection not found'}
 
     #getting the amount of movies in that collection
     mov_quant= len(movie_collection)
@@ -118,6 +129,9 @@ def peliculas_pais(pais:str):
     #filtering movies by country
     countries = df[df['production_countries'].str.contains(pais, case=False, na=False)]
 
+    if countries.empty:
+        return {'error': 'Country not found'}
+
     #getting total movies produced within the country
     quant = len(countries)
 
@@ -131,6 +145,9 @@ def productoras(productora:str):
 
     #filtering the_production to include only rows where the productora is present in the production_companies column
     filtered_production =df[df['production_companies'].str.contains(productora, case=False, na=False)]
+
+    if filtered_production.empty:
+        return {'error': 'Production Company not found'}
 
     #calculating the total revenue and count the number of movies produced by the productora
     total_earnings = filtered_production['revenue'].sum()
@@ -146,6 +163,10 @@ def retorno(pelicula:str):
 
     #filtering df by specified movie
     filtered_movie = df[df['title'].str.contains(pelicula, case=False, na=False)]
+
+    #if no movie is found, returns an error telling you that the movie isn't on the df
+    if filtered_movie.empty:
+        return {'error': 'Movie not found'}
 
     #just calling the correct columns for the filter.
     investment = filtered_movie['budget'].values[0]
@@ -166,14 +187,15 @@ df.fillna({'overview': '', 'tagline': '', 'genres': '', 'belongs_to_collection':
 
 
 def preprocess_text(text):
-    # Lowercase the text
+    '''this function grabs text, turns it to lower case, removes punctuation and numbers'''
+    #lowercase the text
     text = text.lower()
-    # Remove punctuation
+    #remove punctuation
     text = ''.join(c for c in text if c.isalnum() or c.isspace())
     return text
 
 # Preprocess the overview, tagline, and genres columns
-df['preprocessed_text'] = df['overview'] + ' ' + df['tagline'] + ' ' + df['genres']
+df['preprocessed_text'] = df['overview'] + ' ' + df['tagline'] + ' ' + df['genres']  + ' ' + df['title'] + ' ' + df['belongs_to_collection']
 df['processed_text'] = df['preprocessed_text'].map(preprocess_text)
 df = df.drop(columns=['preprocessed_text'])
 
