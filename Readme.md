@@ -46,26 +46,26 @@ In case you want to use the functions in the deployed API, they must follow this
 
 Functions:
 
-- peliculas_mes/month in spanish
-Month must be in spanish, but it doesnt matter if it's lower case, or capitalized.
-The query will return the amount of movies released in that month.
++ peliculas_mes/month in spanish
+`Month must be in spanish, but it doesnt matter if it's lower case, or capitalized.
+The query will return the amount of movies released in that month.`
 
-- peliculas_dia/day in spanish
-Again, day must be in spanish, it doesn't matter if its lower case or capitalized, or if it has accents.
-The query returns the amount of movies released on that day of the week.
++ peliculas_dia/day in spanish
+`Same as with month, day must be in spanish, and it doesn't matter if its lower case or capitalized, or if it has accents.
+The query returns the amount of movies released on that day of the week.`
 
-- franquicia/collection(or movie franchise)
-Here you input a movie collection, with the movie name in english.
-It returns the total earnings and average of the entire franchise.
++ franquicia/collection(or movie franchise)
+`Here you input a movie collection, with the movie name in english.
+It returns the total earnings and average of the entire franchise.`
 
-- peliculas_pais/country
-Here you input a country name in english. The output will be the total of movies produced within that country.
++ peliculas_pais/country
+`Here you input a country name in english. The output will be the total of movies produced within that country.`
 
-- productoras/production company
-Here you input a production company name, and you get the total earnings that company has had and the amount of movies it produced.
++ productoras/production company
+`Here you input a production company name, and you get the total earnings that company has had and the amount of movies it produced.`
 
-- retorno/movie name
-here you input the movie name, and you get the budget, revenue and return it had, as well as the release year of the movie.
++ retorno/movie name
+`Here you input the movie name, and you get the budget, revenue and return it had, as well as the release year of the movie.`
 
 ## Machine Learning
 The machine learning model was fairly simple and straight forward. With the provided data, there really wasn't a lot that could be done, so the idea was to make a content-based filter.
@@ -73,8 +73,8 @@ The way it works is that it grabs the common words from the requested movie, it 
 This is the short version, the more in depth explanation is within the Jupyter Notebook, that also has some weird cases, that couldn't really be classified as "edge cases", but just oddities that were found during testing.
 
 To use this function in the API:
-- recomendacion/movie name
-Input the movie name, and you get a list of 5 movies.
++ recomendacion/movie name
+`Input the movie name, and you get a list of 5 movies.`
 
 ## Extra stuff
 + The dataset that was used:[Dataset](https://drive.google.com/file/d/1Rp7SNuoRnmdoQMa5LWXuK4i7W1ILblYb/view?usp=sharing)
