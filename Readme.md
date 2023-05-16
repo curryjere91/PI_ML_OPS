@@ -26,7 +26,7 @@ As such, these are the main objectives:
 - Functions and ML Development: [API Functions & recommendation system](https://github.com/curryjere91/PI_ML_OPS/blob/main/API%20functions%20and%20ML.ipynb)
 - API deployment folder: [FastAPI config and deployment info](https://github.com/curryjere91/PI_ML_OPS/tree/main/fastapideployment)
 - Link to deployed API: [Render](https://jereramipi-ml-ops.onrender.com/)
-- Video of the API and code working(link if i actually do it): [Video presentation]()
+- Video of the API and code working: [Video presentation](https://drive.google.com/file/d/1bpPl1f1u7z6H_5hLyPAqnFq5lAKsvVMx/view?usp=sharing)
 
 
 # <h1 align=center> **Contents and details** </h1>
