@@ -14,7 +14,7 @@ df = pd.read_csv('clean_dataset.csv')
 
 @app.get('/')
 def index():   
-    return {'Message from Jere to whoever reads it': 'Wisdom is the offsping of suffering and Time.'}
+    return {'Functions': 'peliculas_mes, peliculas_dia, franquicia, peliculas_pais, productoras, retorno, recomendacion.'}
 
 
 @app.get('/peliculas_mes/{mes}')
@@ -90,7 +90,7 @@ def peliculas_dia(dia: str):
     if unidecode(dia.lower()) not in dias_espanol:
         return {'error': 'Invalid day, enter a valid spanish day. Accents can be ignored'}
 
-    # getting the Spanish day, forced to lower case and using unidecode to ignore accents
+    #getting the Spanish day, forced to lower case and using unidecode to ignore accents
     df_dia = df[df['day_of_week'] == dias_espanol[unidecode(dia.lower())]]
     nombre_dia = dia.capitalize()
 
@@ -181,11 +181,10 @@ def retorno(pelicula:str):
 
 #ML
 
-#filling the df with empty spaces to avoid errors, preprocessing the text, and then making the tfidf matrix for the recommendation function.
-
+#filling the df with empty spaces to avoid errors; preprocessing the text; making the tfidf matrix for the recommendation function.
 df.fillna({'overview': '', 'tagline': '', 'genres': '', 'belongs_to_collection': ''}, inplace=True)
 
-
+#function to process the text
 def preprocess_text(text):
     '''this function grabs text, turns it to lower case, removes punctuation and numbers'''
     #lowercase the text
@@ -194,12 +193,12 @@ def preprocess_text(text):
     text = ''.join(c for c in text if c.isalnum() or c.isspace())
     return text
 
-# Preprocess the overview, tagline, and genres columns
+#combine the columns with relevant data; process the data using the previous function; dropping the preprocessed text.
 df['preprocessed_text'] = df['overview'] + ' ' + df['tagline'] + ' ' + df['genres']  + ' ' + df['title'] + ' ' + df['belongs_to_collection']
 df['processed_text'] = df['preprocessed_text'].map(preprocess_text)
 df = df.drop(columns=['preprocessed_text'])
 
-#calculate ifidf matrix. using TfidfVectorizer's list of stop words lets you skip some annoying processes of cleaning the text data. also makes it not eat all the ram
+#make ifidf matrix using TfidfVectorizer. this has its own list of stop words that lets you skip processing it yourself.
 tfidf = TfidfVectorizer(stop_words='english')
 tfidf_matrix = tfidf.fit_transform(df['processed_text'])
 
@@ -207,12 +206,13 @@ tfidf_matrix = tfidf.fit_transform(df['processed_text'])
 @app.get('/recomendacion/{titulo}')
 def recomendacion(titulo: str):
     '''get recommended movies based on a certain movie. uses tfidf matrix to compare vectors from the dataset and the selected movie to generate recommendations'''
+    #grabs a movie title that contains the input word
     movie = df[df['title'].str.contains(titulo, case=False, na=False)]
-
+    #if it's not on the df, it returns an error.
     if movie.empty:
         return {'error': 'Movie not found'}
 
-
+    #when it finds the string on the df, it makes a tfidf matrix vector for it so that it can be compared
     movie_index = movie.index[0]
     movie_vector = tfidf_matrix[movie_index]
 
